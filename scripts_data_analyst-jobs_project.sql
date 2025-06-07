@@ -12,7 +12,7 @@ LIMIT 10;
 --Answer: "ExxonMobil"
 
 -- 3. How many postings are in Tennessee? How many are there in either Tennessee or Kentucky?
---a) number of postings are in Tennessee
+--a) number of postings in Tennessee
 SELECT COUNT(*)
 FROM data_analyst_jobs
 WHERE location = 'TN';
@@ -50,11 +50,6 @@ ORDER BY avg_rating DESC;
 --Answer: "NE" (with an average star rating of 4.199999809)
 
 -- 7. Select unique job titles from the data_analyst_jobs table. How many are there?
--- a) unique job titles
-SELECT DISTINCT(title)
-FROM data_analyst_jobs;
-
--- b) Count of unique job titles
 SELECT COUNT(DISTINCT(title))
 FROM data_analyst_jobs;
 
@@ -68,21 +63,15 @@ WHERE location = 'CA';
 --Answer: 230
 
 -- 9. Find the name of each company and its average star rating for all companies that have more than 5000 reviews across all locations. How many companies are there with more than 5000 reviews across all locations?
---a) names of companies 
-SELECT DISTINCT(company), AVG(star_rating)
+SELECT COUNT(DISTINCT(company)), AVG(star_rating)
 FROM data_analyst_jobs
 WHERE review_count > 5000 AND company IS NOT NULL
 GROUP BY company;
 
---b) count of companies with review count > 5000
-SELECT COUNT(DISTINCT(company))
-FROM data_analyst_jobs
-WHERE review_count > 5000 AND company IS NOT NULL;
-
 --Answer: 40
 
 -- 10. Add the code to order the query in #9 from highest to lowest average star rating. Which company with more than 5000 reviews across all locations in the dataset has the highest star rating? What is that rating?
-SELECT DISTINCT(company), AVG(star_rating)
+SELECT company, AVG(star_rating)
 FROM data_analyst_jobs
 WHERE review_count > 5000 AND company IS NOT NULL
 GROUP BY company
@@ -98,24 +87,18 @@ ORDER BY AVG(star_rating) DESC;
 "Unilever"			4.1999998090000000
 
 -- 11. 	Find all the job titles that contain the word â€˜Analystâ€™. How many different job titles are there? 
---a) list of all the job titles that contain the word â€˜Analystâ€™
-SELECT title
-FROM data_analyst_jobs
-WHERE title LIKE '%Analyst%';
-
---b) number of the different job titles
 SELECT COUNT(DISTINCT(title))
 FROM data_analyst_jobs
-WHERE title LIKE '%Analyst%';
+WHERE title ILIKE '%Analyst%';
 
---Answer: 754
+--Answer: 774
 
 -- 12. How many different job titles do not contain either the word â€˜Analystâ€™ or the word â€˜Analyticsâ€™? What word do these positions have in common?
 SELECT COUNT(DISTINCT(title))
 FROM data_analyst_jobs
-WHERE title NOT LIKE '%Analyst%' OR title NOT LIKE '%Analytics%';
+WHERE title NOT ILIKE '%Analyst%' OR title NOT ILIKE '%Analytics%';
 
---Answer: 802
+--Answer: 801
 
 /***BONUS:**
 You want to understand which jobs requiring SQL are hard to fill. Find the number of jobs by industry (domain) that require SQL and have been posted longer than 3 weeks. 
@@ -123,7 +106,7 @@ You want to understand which jobs requiring SQL are hard to fill. Find the numbe
  - Order your results so that the domain with the greatest number of `hard to fill` jobs is at the top. 
   - Which three industries are in the top 3 on this list? How many jobs have been listed for more than 3 weeks for each of the top 3?*/
 
-SELECT domain AS industry, COUNT(*) AS number_of_jobs
+SELECT domain, COUNT(*) AS number_of_jobs
 FROM data_analyst_jobs
 WHERE skill LIKE '%SQL%' 
 	AND days_since_posting > 21
